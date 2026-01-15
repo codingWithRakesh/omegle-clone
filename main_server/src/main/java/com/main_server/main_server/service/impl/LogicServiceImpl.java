@@ -8,7 +8,6 @@ import com.main_server.main_server.util.CommonUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.random.RandomGenerator;
 
 @Service
 public class LogicServiceImpl implements LogicService {
