@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import VideoCall from "./components/VideoCall";
-import socket from "./socket/socket.js";
+import {socket} from "./socket/socket.js";
 
 function App() {
   const [roomId, setRoomId] = useState(null);

@@ -24,7 +24,7 @@ const setUserController = asyncHandler(async (req: Request, res: Response, next:
     const userDetails: User = { id, name, gender };
     setUserDetails(id, userDetails);
 
-    const response = await fetch("http://localhost:8080/logic/check", {
+    const response = await fetch(`${process.env.SERVER_URL}/logic/check`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -32,14 +32,17 @@ const setUserController = asyncHandler(async (req: Request, res: Response, next:
         body: JSON.stringify({ userId1: id })
     })
     const { roomList } = await response.json();
+    console.log("Received roomList from logic server:", roomList);
     
     if(roomList && roomList.length > 0) {
         for(const room of roomList) {
             if(room.userId1){
-                io.to(room.userId1).emit("match_found", { roomId: room.roomId, peer: room.userId2 });
+                // io.to(room.userId1).emit("match_found", { roomId: room.roomId, peer: getUserDetails(room.userId2) });
+                console.log("Emitted match_found to userId1" );
             }
             if(room.userId2){
-                io.to(room.userId2).emit("match_found", { roomId: room.roomId, peer: room.userId1 });
+                // io.to(room.userId2).emit("match_found", { roomId: room.roomId, peer: getUserDetails(room.userId1) });
+                console.log("Emitted match_found to userId2" );
             }
         }
     }
