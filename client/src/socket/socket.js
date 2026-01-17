@@ -1,11 +1,14 @@
 import { io } from "socket.io-client";
+import useRoomStore from "../store/roomStore.js";
 
-let userId = localStorage.getItem("userId");
-if (!userId) {
-    userId = crypto.randomUUID();
-    localStorage.setItem("userId", userId);
+let storedUserId = localStorage.getItem("userId");
+if (!storedUserId) {
+    storedUserId = crypto.randomUUID();
+    localStorage.setItem("userId", storedUserId);
 }
 
-export const socket = io("http://localhost:8000", {
-    auth: { userId },
+useRoomStore.getState().setUserId(storedUserId);
+
+export const socket = io(`${import.meta.env.VITE_SERVER_URL}`, {
+    auth: { userId: storedUserId },
 });

@@ -21,7 +21,7 @@ io.on('connection', (socket: Socket) => {
 
     socket.on("join_room", (roomId: string) => {
         socket.join(roomId);
-        socket.to(roomId).emit("peer_joined", { userId });
+        socket.to(roomId).emit("user_joined", { userId });
 
         console.log(`Client ${userId} joined room ${roomId}`);
     })

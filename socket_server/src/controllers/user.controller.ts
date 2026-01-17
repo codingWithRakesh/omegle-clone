@@ -3,13 +3,6 @@ import { ApiResponse } from "../utils/apiResponse.js"
 import { ApiError } from "../utils/apiError.js"
 import { Request, Response, NextFunction } from "express"
 import { User, getUserDetails, setUserDetails, updateUserDetails } from "../cache/userDetails.js"
-import { io } from "../socket/socket.js"
-
-interface MatchRoom {
-    roomId: string;
-    userDetails1: User;
-    userDetails2: User;
-}
 
 const setUserController = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const { id, name, gender }: User = req.body;
@@ -24,29 +17,6 @@ const setUserController = asyncHandler(async (req: Request, res: Response, next:
     const userDetails: User = { id, name, gender };
     setUserDetails(id, userDetails);
 
-    const response = await fetch(`${process.env.SERVER_URL}/logic/check`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ userId1: id })
-    })
-    const { roomList } = await response.json();
-    console.log("Received roomList from logic server:", roomList);
-    
-    if(roomList && roomList.length > 0) {
-        for(const room of roomList) {
-            if(room.userId1){
-                // io.to(room.userId1).emit("match_found", { roomId: room.roomId, peer: getUserDetails(room.userId2) });
-                console.log("Emitted match_found to userId1" );
-            }
-            if(room.userId2){
-                // io.to(room.userId2).emit("match_found", { roomId: room.roomId, peer: getUserDetails(room.userId1) });
-                console.log("Emitted match_found to userId2" );
-            }
-        }
-    }
-
     res.status(200).json(new ApiResponse(200, { id: id }, "User details set successfully"));
 })
 
@@ -57,7 +27,7 @@ const updateUserController = asyncHandler(async (req: Request, res: Response, ne
             { field: "id", message: "User ID is required" }
         ]));
     }
-    const existingUser = getUserDetails(id);
+    const existingUser : User | null = getUserDetails(id);
     if (!existingUser) {
         return next(new ApiError(404, "User not found", [
             { field: "id", message: "No user found with the provided ID" }
@@ -79,7 +49,7 @@ const findUserController = asyncHandler(async (req: Request, res: Response, next
             { field: "id", message: "User ID is required" }
         ]));
     }
-    const user = getUserDetails(userId);
+    const user : User | null = getUserDetails(userId);
     if (!user) {
         return next(new ApiError(404, "User not found", [
             { field: "id", message: "No user found with the provided ID" }

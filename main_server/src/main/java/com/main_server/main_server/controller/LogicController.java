@@ -22,9 +22,4 @@ public class LogicController {
         return ResponseEntity.status(HttpStatus.OK).body(logicService.assignRoom(logicRequestDto));
     }
 
-    @GetMapping("/check")
-    ResponseEntity<Map<String, Object>> check(){
-        return ResponseEntity.status(HttpStatus.OK).body(Map.of("status","running"));
-    }
-
 }

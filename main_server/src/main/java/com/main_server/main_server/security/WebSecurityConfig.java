@@ -17,7 +17,7 @@ public class WebSecurityConfig {
                 .csrf(csrfConfig -> csrfConfig.disable())
                 .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/logic/**").permitAll()
+                        .requestMatchers("/logic/**","/check/**").permitAll()
                         .anyRequest().authenticated()
                 );
 

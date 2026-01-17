@@ -12,7 +12,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 import userRoutes from './routes/user.route.js';
+import logicRoutes from './routes/logic.route.js';
+
 app.use('/api/v2/user', userRoutes);
+app.use('/api/v2/logic', logicRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'Socket Server is running' });

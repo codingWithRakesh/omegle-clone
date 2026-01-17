@@ -12,6 +12,8 @@ import java.util.*;
 @Service
 public class LogicServiceImpl implements LogicService {
    private final Queue<Room> queue = new LinkedList<>();
+   private final Set<String> roomData = new HashSet<>();
+   private final Object lock = new Object();
 
     @Override
     public LogicResponseDto assignRoom(LogicRequestDto logicRequestDto) {
@@ -27,6 +29,12 @@ public class LogicServiceImpl implements LogicService {
                 queue.add(room);
             }
         } else{
+            synchronized(lock){
+                if (!roomData.add(logicRequestDto.getRoomId())){
+                    return LogicResponseDto.builder().roomList(roomList).build();
+                }
+            }
+
             boolean isRoomCreatedForUserId2 = false;
             if (!queue.isEmpty()){
                 Room room = queue.poll();
