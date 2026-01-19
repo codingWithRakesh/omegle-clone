@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { socket } from "../socket/socket.js";
+import useRoomStore from "../store/roomStore.js";
 
 const pcConfig = {
   iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
@@ -122,6 +123,28 @@ const VideoCall = ({ roomId }) => {
     setSpeakerOn(!remoteVideo.current.muted);
   };
 
+  const { userId, peer: userId2 } = useRoomStore();
+
+  const nextUser = async () => {  
+    try {
+      const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/v2/logic/match`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ 
+          userId1: userId,
+          userId2: userId2,
+          roomId: roomId
+        })
+      });
+      const data = await response.json();
+      console.log("Matching response:", data);
+    } catch (error) {
+      console.log("Error in matching:", error);
+    }
+  }
+
   const endCall = () => {
     if (peer.current) {
       peer.current.ontrack = null;
@@ -175,6 +198,10 @@ const VideoCall = ({ roomId }) => {
 
         <button onClick={toggleSpeaker}>
           {speakerOn ? "Speaker Off" : "Speaker On"}
+        </button>
+
+        <button onClick={nextUser}>
+          Next
         </button>
 
         <button onClick={endCall} style={{ background: "red", color: "white" }}>

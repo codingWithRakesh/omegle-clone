@@ -17,7 +17,7 @@ import logicRoutes from './routes/logic.route.js';
 app.use('/api/v2/user', userRoutes);
 app.use('/api/v2/logic', logicRoutes);
 
-app.get('/', (req, res) => {
+app.get('/', (req, res): void => {
   res.json({ message: 'Socket Server is running' });
 });
 
