@@ -12,18 +12,18 @@ export interface MatchRequest {
 }
 
 const machingLogicController = asyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { userId1, userId2, roomId }: MatchRequest = req.body;
+    const { userId1 }: MatchRequest = req.body;
 
-    console.log({ userId1, userId2, roomId });
+    console.log({ userId1 });
 
     const response = await fetch(`${process.env.SERVER_URL}/logic/check`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ userId1, userId2, roomId })
+        body: JSON.stringify({ userId1 })
     })
-    const { roomList }: { roomList: Array<MatchRequest> } = await response.json();
+    const { roomList } : { roomList: MatchRequest[] } = await response.json();
     console.log("Received roomList from logic server:", roomList);
 
     if (roomList && roomList.length > 0) {

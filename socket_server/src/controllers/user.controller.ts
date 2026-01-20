@@ -26,7 +26,7 @@ const setUserController = asyncHandler(async (req: Request, res: Response, next:
         },
         body: JSON.stringify({ userId1: id })
     })
-    const { roomList }: { roomList: Array<MatchRequest> } = await response.json();
+    const { roomList } : { roomList: Array<MatchRequest> } = await response.json();
     console.log("Received roomList from logic server:", roomList);
 
     if (roomList && roomList.length > 0) {
@@ -42,7 +42,7 @@ const setUserController = asyncHandler(async (req: Request, res: Response, next:
         }
     }
 
-    res.status(200).json(new ApiResponse(200, { id: id }, "User details set successfully"));
+    res.status(200).json(new ApiResponse(200, { roomList }, "User details set successfully"));
 })
 
 const updateUserController = asyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<void> => {

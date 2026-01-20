@@ -1,12 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 
-/**
- * Usage:
- * <CallDuration peer={peer.current} />
- *
- * Starts timer when peer.connectionState === "connected"
- * Stops timer when disconnected/failed/closed OR component unmount.
- */
 const CallDuration = ({ peer }) => {
   const [duration, setDuration] = useState("00:00");
 

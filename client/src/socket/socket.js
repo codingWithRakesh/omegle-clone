@@ -11,4 +11,5 @@ useRoomStore.getState().setUserId(storedUserId);
 
 export const socket = io(`${import.meta.env.VITE_SERVER_URL}`, {
     auth: { userId: storedUserId },
+    transports: ["websocket", "polling"],
 });

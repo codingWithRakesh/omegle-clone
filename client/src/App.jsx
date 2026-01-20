@@ -1,7 +1,5 @@
 import { useState, useEffect, Suspense } from "react";
-import VideoCall from "./components/VideoCall";
 import { socket } from "./socket/socket.js";
-import TakeData from "./components/TakeData.jsx";
 import useRoomStore from "./store/roomStore.js";
 import { Outlet, useNavigate } from "react-router-dom";
 
@@ -21,8 +19,8 @@ function App() {
       console.log("Extracted roomId:", roomId);
       if (!roomId) return;
 
-      navigate("/call");
       socket.emit("join_room", roomId);
+      navigate("/call");
     };
 
     socket.on("match_found", onMatchFound);

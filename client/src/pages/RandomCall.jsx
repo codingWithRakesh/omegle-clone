@@ -156,7 +156,8 @@ const RandomCall = () => {
     const endVideoCall = async () => {
         await endCall();
         try {
-            await endCallAPI({ roomId, userId: peerDetails?.id });
+            await endCallAPI({ roomId, userId: peerDetails?.id});
+            socket.emit("leave_room", userId);
         } catch (error) {
             console.error("Error ending call:", error);
         }
@@ -167,7 +168,7 @@ const RandomCall = () => {
         try {
             await endCall();
             await endCallAPI({ roomId, userId: peerDetails?.id });
-            const roomList = await fetchRoomList({ userId1: userId, userId2: peerDetails?.id, roomId: roomId });
+            const roomList = await fetchRoomList({ userId1: userId });
             console.log("Room List:", roomList);
             bumpMatchCycle();
         } catch (error) {
