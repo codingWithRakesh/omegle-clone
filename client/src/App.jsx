@@ -9,7 +9,7 @@ function App() {
 
   useEffect(() => {
     const onMatchFound = (payload) => {
-      console.log("match_found payload:", payload);
+      // console.log("match_found payload:", payload);
 
       const roomId = payload?.roomId;
       setRoomId(roomId);
