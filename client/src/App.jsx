@@ -2,13 +2,15 @@ import { useState, useEffect, Suspense } from "react";
 import { socket } from "./socket/socket.js";
 import useRoomStore from "./store/roomStore.js";
 import { Outlet, useNavigate } from "react-router-dom";
+import { useIsConnected } from "./contexts/isConnectedContext.jsx";
 
 function App() {
   const { setRoomId, setPeer, matchCycle } = useRoomStore();
   const navigate = useNavigate();
+  const { isConnected, setIsConnected } = useIsConnected()
 
   useEffect(() => {
-    const onMatchFound = (payload) => {
+    const onMatchFound = async (payload) => {
       // console.log("match_found payload:", payload);
 
       const roomId = payload?.roomId;
@@ -19,6 +21,8 @@ function App() {
       console.log("Extracted roomId:", roomId);
       if (!roomId) return;
 
+      await setIsConnected(false);
+      console.log("Set isConnected to false");
       navigate("/call");
     };
 
@@ -27,7 +31,7 @@ function App() {
     return () => {
       socket.off("match_found", onMatchFound);
     };
-  }, [matchCycle]);
+  }, [matchCycle, setIsConnected]);
 
   return (
     <div>

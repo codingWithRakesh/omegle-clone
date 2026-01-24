@@ -2,18 +2,29 @@ import React, { useEffect, useState } from 'react'
 import { socket } from '../socket/socket';
 import useRoomStore from '../store/roomStore';
 import useLogicStore from '../store/logicStore';
+import { useIsConnected } from '../contexts/isConnectedContext';
 
 const VideoShow = ({ isOpenMessage, remoteVideo, localVideo, peerDetails }) => {
-    const [isConnected, setIsConnected] = useState(false)
+    const { isConnected, setIsConnected } = useIsConnected()
     const { userId, peer, roomId, bumpMatchCycle } = useRoomStore();
     const { fetchRoomList, endVideoCall: endCallAPI } = useLogicStore();
     useEffect(() => {
-        const callEnd = (data) => {
-            console.log("Call ended by peer", data);
-            setIsConnected(true);
+        const callEnd = async (data) => {
+            const {isExist} = data;
+            console.log("Call ended by peer",{data, isExist});
+            await setIsConnected(true);
+
+            if(isExist){
+                const roomList = await fetchRoomList({ userId1: userId });
+                console.log("Room List:", roomList);
+            }
+            
         };
         socket.on("call_ended", callEnd);
-    }, [])
+        return () => {
+            socket.off("call_ended", callEnd);
+        };
+    }, [setIsConnected, fetchRoomList, userId]);
 
     return (
         <div className={`videoCall ${isOpenMessage ? "w-[73%]" : "w-[90%]"} relative h-full border rounded-2xl overflow-hidden`}>

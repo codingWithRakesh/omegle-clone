@@ -2,22 +2,25 @@ import { useState } from 'react'
 import useRoomStore from '../store/roomStore';
 import useLogicStore from '../store/logicStore';
 import useUserStore from '../store/userStore';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
     const { userId } = useRoomStore();
     const { createUser } = useUserStore();
-    const [first, setfirst] = useState({
+    const [userDetails, setUserDetails] = useState({
         name: "",
         gender: ""
     })
+    const navigate = useNavigate();
     const handleChange = async () => {
-        console.log(first);
-        if (!first.name || !first.gender) {
+        console.log(userDetails);
+        if (!userDetails.name || !userDetails.gender) {
             alert("Please enter all details");
             return;
         }
         try {
-            const user = await createUser({ id: userId, name: first.name, gender: first.gender });
+            const user = await createUser({ id: userId, name: userDetails.name, gender: userDetails.gender });
+            navigate("/call");
             console.log("User created:", user);
         } catch (error) {
             console.error("Error creating user:", error);
@@ -30,11 +33,11 @@ const Home = () => {
                 <p className='text-lg text-center'>Connect with random people around the world!</p>
             </div>
             <div className='border p-6 rounded-2xl'>
-                <input type="text" value={first.name} onChange={(e) => setfirst({...first, name: e.target.value})} className='border w-full outline-none p-2 rounded-md' placeholder="Enter your name" />
+                <input type="text" value={userDetails.name} onChange={(e) => setUserDetails({...userDetails, name: e.target.value})} className='border w-full outline-none p-2 rounded-md' placeholder="Enter your name" />
                 <div className='flex p-4 gap-4'>
-                    <div className={`${first.gender === "Male" ? "border-2 border-blue-700" : "border"} rounded-2xl p-4 cursor-pointer`} onClick={() => setfirst({...first, gender: "Male"})}>Male</div>
-                    <div className={`${first.gender === "Female" ? "border-2 border-blue-700" : "border"} rounded-2xl p-4 cursor-pointer`} onClick={() => setfirst({...first, gender: "Female"})}>Female</div>
-                    <div className={`${first.gender === "Other" ? "border-2 border-blue-700" : "border"} rounded-2xl p-4 cursor-pointer`} onClick={() => setfirst({...first, gender: "Other"})}>Other</div>
+                    <div className={`${userDetails.gender === "Male" ? "border-2 border-blue-700" : "border"} rounded-2xl p-4 cursor-pointer`} onClick={() => setUserDetails({...userDetails, gender: "Male"})}>Male</div>
+                    <div className={`${userDetails.gender === "Female" ? "border-2 border-blue-700" : "border"} rounded-2xl p-4 cursor-pointer`} onClick={() => setUserDetails({...userDetails, gender: "Female"})}>Female</div>
+                    <div className={`${userDetails.gender === "Other" ? "border-2 border-blue-700" : "border"} rounded-2xl p-4 cursor-pointer`} onClick={() => setUserDetails({...userDetails, gender: "Other"})}>Other</div>
                 </div>
             </div>
             <div>

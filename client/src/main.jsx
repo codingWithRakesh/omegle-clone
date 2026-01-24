@@ -5,6 +5,7 @@ import App from './App.jsx'
 import RandomCall from './pages/RandomCall.jsx'
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom"
 import Home from './pages/Home.jsx'
+import IsConnectedContextProvider from './contexts/isConnectedContext.jsx'
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <IsConnectedContextProvider>
+      <RouterProvider router={router} />
+    </IsConnectedContextProvider>
   </StrictMode>
 )

@@ -2,7 +2,7 @@ import { ApiError } from "../utils/apiError.js";
 
 export interface User {
     id: string;
-    name : string;
+    name: string;
     gender: string;
 }
 
@@ -22,7 +22,7 @@ const setUserDetails = (userId: string, userDetails: User): void => {
 };
 
 const updateUserDetails = (userId: string, userDetails: User): void => {
-    if(!userDetailsCache.has(userId)) {
+    if (!userDetailsCache.has(userId)) {
         throw new ApiError(404, "User not found for this ID", [
             { field: "id", message: "No user found with the provided ID" }
         ]);
@@ -31,12 +31,23 @@ const updateUserDetails = (userId: string, userDetails: User): void => {
 };
 
 const removeUserDetails = (userId: string): void => {
+    if (!userDetailsCache.has(userId)) {
+        throw new ApiError(404, "User not found for this ID", [
+            { field: "id", message: "No user found with the provided ID" }
+        ]);
+    }
+
     userDetailsCache.delete(userId);
 };
 
-export { 
-    getUserDetails, 
-    setUserDetails, 
-    removeUserDetails, 
-    updateUserDetails 
+const isUserExist = (userId: string): boolean => {
+    return userDetailsCache.has(userId);
+};
+
+export {
+    getUserDetails,
+    setUserDetails,
+    removeUserDetails,
+    updateUserDetails,
+    isUserExist
 };

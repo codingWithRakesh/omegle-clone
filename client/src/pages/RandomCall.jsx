@@ -12,13 +12,15 @@ import { socket } from '../socket/socket.js';
 import CallDuration from '../components/CallDuration.jsx';
 import { useNavigate } from 'react-router-dom';
 import useLogicStore from '../store/logicStore.js';
-import { io } from 'socket.io-client';
+import { useIsConnected } from '../contexts/isConnectedContext.jsx';
 
 const RandomCall = () => {
     const [isOpenMessage, setIsOpenMessage] = useState(false)
     const [peerObj, setPeerObj] = useState(null);
     const [micOn, setMicOn] = useState(true);
     const [camOn, setCamOn] = useState(true);
+
+    const { isConnected, setIsConnected } = useIsConnected()
 
     const localVideo = useRef(null);
     const remoteVideo = useRef(null);
@@ -156,7 +158,8 @@ const RandomCall = () => {
     const endVideoCall = async () => {
         await endCall();
         try {
-            await endCallAPI({ roomId, userId: peerDetails?.id});
+            console.log({ roomId, peerId: peerDetails?.id, userId, isEnd: true })
+            await endCallAPI({ roomId, peerId: peerDetails?.id, userId, isEnd: true });
             socket.emit("leave_room", userId);
         } catch (error) {
             console.error("Error ending call:", error);
@@ -166,10 +169,12 @@ const RandomCall = () => {
 
     const nextCall = async () => {
         try {
+            await setIsConnected(true);
             await endCall();
-            await endCallAPI({ roomId, userId: peerDetails?.id });
             const roomList = await fetchRoomList({ userId1: userId });
             console.log("Room List:", roomList);
+            console.log({ roomId, peerId: peerDetails?.id, userId, isEnd: false })
+            await endCallAPI({ roomId, peerId: peerDetails?.id, userId, isEnd: false });
             bumpMatchCycle();
         } catch (error) {
             console.error("Error fetching next call:", error);

@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/logic")
 @AllArgsConstructor
@@ -17,7 +19,24 @@ public class LogicController {
 
     @PostMapping("/check")
     ResponseEntity<LogicResponseDto> setRoom(@RequestBody LogicRequestDto logicRequestDto){
-        return ResponseEntity.status(HttpStatus.OK).body(logicService.assignRoom(logicRequestDto));
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(logicService.assignRoom(logicRequestDto));
+    }
+
+    @DeleteMapping("/remove")
+    ResponseEntity<Void> removeFromRoom(@RequestBody LogicRequestDto logicRequestDto){
+        logicService.removeUserId(logicRequestDto);
+        return ResponseEntity
+                .noContent()
+                .build();
+    }
+
+    @GetMapping("/isHave")
+    ResponseEntity<Map<String,Boolean>> isUserIdInQueue(@RequestBody LogicRequestDto logicRequestDto){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(logicService.isHaveInQueue(logicRequestDto));
     }
 
 }

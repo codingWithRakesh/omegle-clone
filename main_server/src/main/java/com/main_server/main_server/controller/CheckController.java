@@ -13,6 +13,8 @@ import java.util.Map;
 public class CheckController {
     @GetMapping("/isWorking")
     ResponseEntity<Map<String, Object>> check(){
-        return ResponseEntity.status(HttpStatus.OK).body(Map.of("status","running"));
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(Map.of("status","running"));
     }
 }

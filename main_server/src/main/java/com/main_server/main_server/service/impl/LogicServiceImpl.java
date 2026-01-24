@@ -91,4 +91,29 @@ public class LogicServiceImpl implements LogicService {
                 .roomList(roomList)
                 .build();
     }
+
+    @Override
+    public void removeUserId(LogicRequestDto logicRequestDto) {
+        String targetUserId = logicRequestDto.getUserId1();
+        List<Room> skipped = new ArrayList<>();
+
+        while (!queue.isEmpty()) {
+            Room r = queue.poll();
+            String candidate = r.getUserId1();
+            if (targetUserId.equals(candidate)) {
+                break;
+            } else {
+                skipped.add(r);
+            }
+        }
+        queue.addAll(skipped);
+    }
+
+    @Override
+    public Map<String, Boolean> isHaveInQueue(LogicRequestDto logicRequestDto) {
+        if (removeIfExist(logicRequestDto)){
+            return Map.of("message",true);
+        }
+        return Map.of("message",false);
+    }
 }
