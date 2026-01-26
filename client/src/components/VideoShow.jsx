@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { socket } from '../socket/socket';
 import useRoomStore from '../store/roomStore';
 import useLogicStore from '../store/logicStore';
 import { useIsConnected } from '../contexts/isConnectedContext';
+import useMessageStore from '../store/messageStore';
 
 const VideoShow = ({ isOpenMessage, remoteVideo, localVideo, peerDetails }) => {
     const { isConnected, setIsConnected } = useIsConnected()
     const { userId, peer, roomId, bumpMatchCycle } = useRoomStore();
     const { fetchRoomList, endVideoCall: endCallAPI } = useLogicStore();
+    const clearMessages = useMessageStore((state) => state.clearMessages);
     useEffect(() => {
         const callEnd = async (data) => {
             const {isExist} = data;
@@ -18,7 +20,7 @@ const VideoShow = ({ isOpenMessage, remoteVideo, localVideo, peerDetails }) => {
                 const roomList = await fetchRoomList({ userId1: userId });
                 console.log("Room List:", roomList);
             }
-            
+            clearMessages();
         };
         socket.on("call_ended", callEnd);
         return () => {

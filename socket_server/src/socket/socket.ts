@@ -42,7 +42,7 @@ io.on('connection', (socket: Socket): void => {
         console.log(`ICE candidate from ${userId} sent to room ${roomId}`);
     });
 
-    socket.on("leave_room", (userId) => {
+    socket.on("leave_room", (userId): void => {
         socket.leave(userId);
     });
 

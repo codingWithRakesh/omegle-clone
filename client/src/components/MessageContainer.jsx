@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { MdSend } from 'react-icons/md'
 import { RxCross1 } from 'react-icons/rx'
 import useMessageStore from '../store/messageStore.js'
@@ -8,20 +8,31 @@ import { socket } from '../socket/socket.js'
 const MessageContainer = ({ setIsOpenMessage }) => {
     const [text, setText] = useState('')
     const messages = useMessageStore((state) => state.messages);
+    // const [messages, setMessages] = useState([])
     const sendMessage = useMessageStore((state) => state.sendMessage);
     const addMessage = useMessageStore((state) => state.addMessage);
 
-    const { getUserId, getRoomId, getPeer } = useRoomStore()
+    const { getUserId, getPeer } = useRoomStore()
 
     useEffect(() => {
         const onNewMessage = (payload) => {
-            // payload = { roomId, senderId, message }
+            // payload = { receiverId, message }
             console.log("New message received:", payload);
             // Optional: filter by room
-            if (payload.roomId !== getRoomId()) return;
+            // if (payload.receiverId !== getPeer()) return;
+
+            // setMessages((prevMessages) => [
+            //     ...prevMessages,
+            //     {
+            //         id: payload.receiverId,
+            //         content: payload.message,
+            //         sender: 'peer',
+            //         timestamp: new Date().toISOString()
+            //     }
+            // ]);
 
             addMessage({
-                id: payload.senderId,
+                id: payload.receiverId,
                 content: payload.message,
                 sender: 'peer',
                 timestamp: new Date().toISOString()
@@ -30,7 +41,7 @@ const MessageContainer = ({ setIsOpenMessage }) => {
 
         socket.on("new_message", onNewMessage);
         return () => socket.off("new_message", onNewMessage);
-    }, [getRoomId, addMessage]);
+    }, [getPeer]);
 
 
     const onSendMessage = async () => {
@@ -47,7 +58,13 @@ const MessageContainer = ({ setIsOpenMessage }) => {
         setText('');
 
         try {
-            const response = await sendMessage({ message: message, roomId: getRoomId(), senderId: getPeer() });
+            const {id} = getPeer();
+            console.log("Sending message to receiverId:", id);
+            const response = await sendMessage({ message: message, receiverId: id });
+            // setMessages((prevMessages) => [
+            //     ...prevMessages,
+            //     userMessage
+            // ]);
             addMessage(userMessage);
         } catch (error) {
             console.error("Failed to send message:", error);
@@ -65,28 +82,13 @@ const MessageContainer = ({ setIsOpenMessage }) => {
             <div className='contentPartmessage grow p-4 overflow-y-auto'>
                 {
                     messages.map((mes, index) => (
-                        <div key={index} className={`message mb-4 ${mes.sender === 'user' ? 'flex justify-end' : ''}`}>
+                        <div key={index} className={`message mb-4 ${mes.sender === 'user' ? 'flex justify-end' : 'flex justify-start'}`}>
                             <div className={`${mes.sender === 'user' ? 'bg-gray-200' : 'bg-blue-500 text-white'} px-4 py-2 rounded-2xl max-w-[70%]`}>
                                 {mes.content}
                             </div>
                         </div>
                     ))
                 }
-                <div className='message mb-4'>
-                    <div className='bg-blue-500 text-white px-4 py-2 rounded-2xl max-w-[70%]'>
-                        Hello! How are you?
-                    </div>
-                </div>
-                <div className='message mb-4 flex justify-end'>
-                    <div className='bg-gray-200 px-4 py-2 rounded-2xl max-w-[70%]'>
-                        I'm good, thank you! How about you?
-                    </div>
-                </div>
-                <div className='message mb-4'>
-                    <div className='bg-blue-500 text-white px-4 py-2 rounded-2xl max-w-[70%]'>
-                        I'm doing well, thanks for asking!
-                    </div>
-                </div>
             </div>
             <div className='footerPartMessage h-[8%] flex items-center px-2 rounded-2xl m-2 gap-2'>
                 <input type="text" placeholder='Type a message...' className='grow border rounded px-2 py-2' value={text} onChange={(e) => setText(e.target.value)} />

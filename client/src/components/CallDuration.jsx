@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const CallDuration = ({ peer }) => {
   const [duration, setDuration] = useState("00:00");

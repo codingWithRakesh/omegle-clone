@@ -10,6 +10,7 @@ const useMessageStore = create((set) => ({
             messages: [...state.messages, mesObj]
         }))
     },
+    clearMessages: () => set({ messages: [] }),
     sendMessage: async (messageData) => {
         console.log("Sending message data:", messageData);
         set({ isLoading: true, error: null });

@@ -6,20 +6,20 @@ import { getUserDetails, removeUserDetails, isUserExist } from "../cache/userDet
 import { io } from "../socket/socket.js";
 
 interface MessageRequest {
-    roomId: string;
-    senderId: string;
+    receiverId: string;
     message: string;
 }
 
 const sendMessageController = asyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    const { roomId, senderId, message }: MessageRequest = req.body;
+    const { receiverId, message }: MessageRequest = req.body;
 
-    if (!senderId || !message) {
-        throw new ApiError(400, "senderId and message are required");
+    if (!receiverId || !message) {
+        throw new ApiError(400, "receiverId and message are required");
     }
+    console.log({ receiverId, message });
 
-    io.to(senderId).emit("new_message", { roomId, senderId, message });
-    console.log(`Emitted new_message to senderId: ${senderId} in roomId: ${roomId}`);
+    io.to(receiverId).emit("new_message", { receiverId, message });
+    console.log(`Emitted new_message to receiverId: ${receiverId}`);
 
     res.status(200).json(new ApiResponse(200, null, "Message sent successfully"));
 });
