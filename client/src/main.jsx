@@ -6,6 +6,7 @@ import RandomCall from './pages/RandomCall.jsx'
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom"
 import Home from './pages/Home.jsx'
 import IsConnectedContextProvider from './contexts/isConnectedContext.jsx'
+import ThemeContextProvider from './contexts/themeContext.jsx'
 
 const router = createBrowserRouter([
   {
@@ -27,8 +28,10 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <IsConnectedContextProvider>
-      <RouterProvider router={router} />
-    </IsConnectedContextProvider>
+    <ThemeContextProvider>
+      <IsConnectedContextProvider>
+        <RouterProvider router={router} />
+      </IsConnectedContextProvider>
+    </ThemeContextProvider>
   </StrictMode>
 )

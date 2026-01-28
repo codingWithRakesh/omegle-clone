@@ -14,6 +14,9 @@ import { useNavigate } from 'react-router-dom';
 import useLogicStore from '../store/logicStore.js';
 import { useIsConnected } from '../contexts/isConnectedContext.jsx';
 import useMessageStore from '../store/messageStore.js';
+import { useTheme } from '../contexts/themeContext.jsx';
+import { WiMoonAltFull } from "react-icons/wi";
+import { WiMoonAltNew } from "react-icons/wi";
 
 const RandomCall = () => {
     const [isOpenMessage, setIsOpenMessage] = useState(true)
@@ -23,6 +26,7 @@ const RandomCall = () => {
     const clearMessages = useMessageStore((state) => state.clearMessages);
 
     const { isConnected, setIsConnected } = useIsConnected()
+    const { theme, setTheme } = useTheme()
 
     const localVideo = useRef(null);
     const remoteVideo = useRef(null);
@@ -183,7 +187,7 @@ const RandomCall = () => {
     }
 
     return (
-        <div className='w-full h-screen flex justify-center items-center flex-col'>
+        <div className={`w-full ${theme === "light" ? "" : "bg-gray-950"} h-screen flex justify-center items-center flex-col`}>
             <div className='w-full h-[90%] mainArea flex items-center justify-center p-4 gap-4'>
 
                 <VideoShow isOpenMessage={isOpenMessage} remoteVideo={remoteVideo} localVideo={localVideo} peerDetails={peerDetails} />
@@ -196,25 +200,30 @@ const RandomCall = () => {
                     <CallDuration peer={peerObj} />
                 </div>
                 <div className='buttons flex items-center justify-center gap-2'>
-                    <div onClick={toogleCammera} className='messageBtn bg-gray-100 transition-all p-3 rounded-full cursor-pointer hover:bg-gray-200'>
+                    <div onClick={toogleCammera} className={`messageBtn ${theme === "light" ? "bg-gray-100 hover:bg-gray-200" : "hover:bg-gray-700 bg-gray-800 text-gray-400"} transition-all p-3 rounded-full cursor-pointer`}>
                         {camOn ? <IoVideocam className='text-3xl' />
                             :
                             <IoVideocamOff className='text-3xl' />}
                     </div>
-                    <div onClick={toggleMic} className='messageBtn bg-gray-100 transition-all p-3 rounded-full cursor-pointer hover:bg-gray-200'>
+                    <div onClick={toggleMic} className={`messageBtn ${theme === "light" ? "bg-gray-100 hover:bg-gray-200" : "hover:bg-gray-700 bg-gray-800 text-gray-400"} transition-all p-3 rounded-full cursor-pointer`}>
                         {micOn ? <IoMdMic className='text-3xl' />
                             :
                             <MdMicOff className='text-3xl' />}
                     </div>
-                    <div onClick={endVideoCall} className='messageBtn bg-gray-100 transition-all p-3 rounded-full cursor-pointer hover:bg-gray-200'>
+                    <div onClick={endVideoCall} className={`messageBtn ${theme === "light" ? "bg-gray-100 hover:bg-gray-200" : "hover:bg-gray-700 bg-gray-800 text-gray-400"} transition-all p-3 rounded-full cursor-pointer`}>
                         <MdCallEnd className='text-3xl text-red-600' />
                     </div>
-                    <div onClick={nextCall} title='Next' className='messageBtn bg-gray-100 transition-all p-3 rounded-full cursor-pointer hover:bg-gray-200'>
+                    <div onClick={nextCall} title='Next' className={`messageBtn ${theme === "light" ? "bg-gray-100 hover:bg-gray-200" : "hover:bg-gray-700 bg-gray-800 text-gray-400"} transition-all p-3 rounded-full cursor-pointer`}>
                         <BsCaretRightFill className='text-3xl' />
                     </div>
                 </div>
-                <div onClick={() => setIsOpenMessage((v) => !v)} className='messageBtn bg-gray-100 transition-all p-4 rounded-full cursor-pointer hover:bg-gray-200'>
-                    <FaMessage className='text-2xl' />
+                <div className='flex gap-4 items-center justify-center'>
+                    <div onClick={() => setIsOpenMessage((v) => !v)} className={`messageBtn ${theme === "light" ? "bg-gray-100 hover:bg-gray-200" : "hover:bg-gray-700 bg-gray-800 text-gray-400"} transition-all p-4 rounded-full cursor-pointer`}>
+                        <FaMessage className='text-2xl' />
+                    </div>
+                    <div onClick={() => setTheme(theme === "light" ? "dark" : "light")} title='Next' className={`messageBtn ${theme === "light" ? "bg-gray-100 hover:bg-gray-200" : "hover:bg-gray-700 bg-gray-800 text-gray-400"} transition-all p-3 rounded-full cursor-pointer`}>
+                        {theme === "light" ? <WiMoonAltNew className='text-3xl' title='dark' /> : <WiMoonAltFull className='text-3xl' title='light' />}
+                    </div>
                 </div>
             </div>
         </div>

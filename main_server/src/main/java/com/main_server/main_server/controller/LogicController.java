@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -39,4 +40,18 @@ public class LogicController {
                 .body(logicService.isHaveInQueue(logicRequestDto));
     }
 
+    @GetMapping("/isEmpty")
+    ResponseEntity<Map<String,Boolean>> isQueueEmpty() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(Map.of("isEmpty", logicService.isQueueEmpty()));
+
+    }
+
+    @GetMapping("/allQueueUserIds")
+    ResponseEntity<List<String>> getAllQueueUserIds() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(logicService.getAllQueueUserIds());
+    }
 }

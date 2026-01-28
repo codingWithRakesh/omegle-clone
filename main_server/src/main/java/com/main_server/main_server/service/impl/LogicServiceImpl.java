@@ -116,4 +116,18 @@ public class LogicServiceImpl implements LogicService {
         }
         return Map.of("message",false);
     }
+
+    @Override
+    public Boolean isQueueEmpty() {
+        return queue.isEmpty();
+    }
+
+    @Override
+    public List<String> getAllQueueUserIds() {
+        List<String> userIds = new ArrayList<>();
+        for (Room room : queue) {
+            userIds.add(room.getUserId1());
+        }
+        return userIds;
+    }
 }

@@ -3,6 +3,7 @@ package com.main_server.main_server.service;
 import com.main_server.main_server.dto.LogicRequestDto;
 import com.main_server.main_server.dto.LogicResponseDto;
 
+import java.util.List;
 import java.util.Map;
 
 public interface LogicService {
@@ -12,4 +13,8 @@ public interface LogicService {
     void removeUserId(LogicRequestDto logicRequestDto);
 
     Map<String, Boolean> isHaveInQueue(LogicRequestDto logicRequestDto);
+
+    Boolean isQueueEmpty();
+
+    List<String> getAllQueueUserIds();
 }

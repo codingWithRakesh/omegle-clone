@@ -6,7 +6,7 @@ export interface User {
     gender: string;
 }
 
-const userDetailsCache: Map<string, User> = new Map();
+export const userDetailsCache: Map<string, User> = new Map();
 
 const getUserDetails = (userId: string): User | null => {
     return userDetailsCache.get(userId) || null;

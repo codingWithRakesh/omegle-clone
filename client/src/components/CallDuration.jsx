@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
+import { useTheme } from "../contexts/themeContext";
 
 const CallDuration = ({ peer }) => {
   const [duration, setDuration] = useState("00:00");
+  const { theme } = useTheme()
 
   const startRef = useRef(null);
   const timerRef = useRef(null);
@@ -55,7 +57,7 @@ const CallDuration = ({ peer }) => {
   }, [peer]);
 
   return (
-    <div className="bg-gray-200 px-4 py-2 rounded-2xl">
+    <div className={`${theme === "light" ? "bg-gray-200" : "bg-gray-800 text-gray-400"} px-4 py-2 rounded-2xl`}>
       Call Duration: {duration}
     </div>
   );

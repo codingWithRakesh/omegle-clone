@@ -1,28 +1,28 @@
 # ---------- BUILD STAGE ----------
 FROM maven:3.9.9-eclipse-temurin-21 AS build
-WORKDIR /app
-COPY pom.xml .
-COPY mvnw .
-COPY mvnw.cmd .
-RUN mvn dependency:go-offline
 
-COPY src src
+WORKDIR /app
+
+COPY pom.xml .
+RUN mvn -B dependency:resolve dependency:resolve-plugins
+
+COPY src ./src
+
 RUN mvn clean package -DskipTests
 
+
 # ---------- RUN STAGE ----------
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:21-jre-alpine
+
 WORKDIR /app
 
-RUN useradd -m -u 1000 appuser
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 COPY --from=build /app/target/*.jar app.jar
-RUN chown appuser:appuser app.jar
+RUN chown appuser:appgroup app.jar
 
 USER appuser
 
 EXPOSE 8080
-
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD java -cp app.jar org.springframework.boot.loader.JarLauncher --version || exit 1
 
 ENTRYPOINT ["java","-jar","app.jar"]

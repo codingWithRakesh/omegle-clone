@@ -3,6 +3,7 @@ import { ApiResponse } from "../utils/apiResponse.js"
 import { ApiError } from "../utils/apiError.js"
 import { Request, Response, NextFunction } from "express"
 import { User, getUserDetails, setUserDetails, updateUserDetails } from "../cache/userDetails.js"
+import { userDetailsCache } from "../cache/userDetails.js"
 import { MatchRequest } from "./logic.controller.js"
 import { io } from "../socket/socket.js"
 
@@ -80,5 +81,26 @@ const findUserController = asyncHandler(async (req: Request, res: Response, next
     res.status(200).json(new ApiResponse(200, user, "User details fetched successfully"));
 });
 
+const mapIsEmptyController = asyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const isEmpty: boolean = userDetailsCache.size === 0;
+    res.status(200).json(
+        new ApiResponse(200, { isEmpty }, "User details cache emptiness checked successfully")
+    );
 
-export { setUserController, updateUserController, findUserController };
+})
+
+const allMapUsersController = asyncHandler(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const allUsers: Array<User> = Array.from(userDetailsCache.values());
+    res.status(200).json(
+        new ApiResponse(200, { allUsers }, "All users in cache fetched successfully")
+    );
+});
+
+
+export {
+    setUserController, 
+    updateUserController, 
+    findUserController, 
+    mapIsEmptyController, 
+    allMapUsersController 
+};
