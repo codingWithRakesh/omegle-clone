@@ -7,20 +7,21 @@ import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom"
 import Home from './pages/Home.jsx'
 import IsConnectedContextProvider from './contexts/isConnectedContext.jsx'
 import ThemeContextProvider from './contexts/themeContext.jsx'
+import IsOpenMessageContextProvider from './contexts/isOpenMessageContext.jsx'
 
 const router = createBrowserRouter([
   {
-    path : "/",
+    path: "/",
     // errorElement : <Error />,
-    element : <App />,
-    children : [
+    element: <App />,
+    children: [
       {
         path: "/",
-        element : <Home />
+        element: <Home />
       },
       {
-        path : "/call",
-        element : <RandomCall />
+        path: "/call",
+        element: <RandomCall />
       }
     ]
   }
@@ -28,10 +29,12 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <ThemeContextProvider>
-      <IsConnectedContextProvider>
-        <RouterProvider router={router} />
-      </IsConnectedContextProvider>
-    </ThemeContextProvider>
+    <IsOpenMessageContextProvider>
+      <ThemeContextProvider>
+        <IsConnectedContextProvider>
+          <RouterProvider router={router} />
+        </IsConnectedContextProvider>
+      </ThemeContextProvider>
+    </IsOpenMessageContextProvider>
   </StrictMode>
 )

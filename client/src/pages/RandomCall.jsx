@@ -17,9 +17,10 @@ import useMessageStore from '../store/messageStore.js';
 import { useTheme } from '../contexts/themeContext.jsx';
 import { WiMoonAltFull } from "react-icons/wi";
 import { WiMoonAltNew } from "react-icons/wi";
+import { useIsOpenMessage } from '../contexts/isOpenMessageContext.jsx';
 
 const RandomCall = () => {
-    const [isOpenMessage, setIsOpenMessage] = useState(true)
+    const { isOpenMessage, setIsOpenMessage } = useIsOpenMessage()
     const [peerObj, setPeerObj] = useState(null);
     const [micOn, setMicOn] = useState(true);
     const [camOn, setCamOn] = useState(true);
@@ -37,6 +38,7 @@ const RandomCall = () => {
 
     const { userId, peer: peerDetails, roomId, bumpMatchCycle } = useRoomStore();
     const { fetchRoomList, endVideoCall:endCallAPI } = useLogicStore();
+    const { setRoomId, setPeer } = useRoomStore();
 
     const navigate = useNavigate();
 
@@ -164,7 +166,10 @@ const RandomCall = () => {
     const endVideoCall = async () => {
         await endCall();
         try {
+            setPeer(null);
+            setRoomId(null);
             await endCallAPI({ roomId, peerId: peerDetails?.id, userId, isEnd: true });
+            setIsOpenMessage((v) => ({...v, isOn: false }));
             socket.emit("leave_room", userId);
             clearMessages();
         } catch (error) {
@@ -175,10 +180,12 @@ const RandomCall = () => {
 
     const nextCall = async () => {
         try {
-            await setIsConnected(true);
+            setIsOpenMessage((v) => ({...v, isOn: false }));
+            setIsConnected(true);
             await endCall();
             await fetchRoomList({ userId1: userId });
             await endCallAPI({ roomId, peerId: peerDetails?.id, userId, isEnd: false });
+            setRoomId(null);
             clearMessages();
             bumpMatchCycle();
         } catch (error) {
@@ -190,9 +197,9 @@ const RandomCall = () => {
         <div className={`w-full ${theme === "light" ? "" : "bg-gray-950"} h-screen flex justify-center items-center flex-col`}>
             <div className='w-full h-[90%] mainArea flex items-center justify-center p-4 gap-4'>
 
-                <VideoShow isOpenMessage={isOpenMessage} remoteVideo={remoteVideo} localVideo={localVideo} peerDetails={peerDetails} />
+                <VideoShow remoteVideo={remoteVideo} localVideo={localVideo} peerDetails={peerDetails} />
 
-                {isOpenMessage && <MessageContainer setIsOpenMessage={setIsOpenMessage} />}
+                {(isOpenMessage.onClickIsOn && isOpenMessage.isOn) && <MessageContainer setIsOpenMessage={setIsOpenMessage} />}
 
             </div>
             <div className='buttons w-full h-[10%] px-8 flex justify-between items-center gap-8'>
@@ -218,7 +225,7 @@ const RandomCall = () => {
                     </div>
                 </div>
                 <div className='flex gap-4 items-center justify-center'>
-                    <div onClick={() => setIsOpenMessage((v) => !v)} className={`messageBtn ${theme === "light" ? "bg-gray-100 hover:bg-gray-200" : "hover:bg-gray-700 bg-gray-800 text-gray-400"} transition-all p-4 rounded-full cursor-pointer`}>
+                    <div onClick={() => setIsOpenMessage((v) => ({...v, onClickIsOn: !v.onClickIsOn}))} className={`messageBtn ${theme === "light" ? "bg-gray-100 hover:bg-gray-200" : "hover:bg-gray-700 bg-gray-800 text-gray-400"} transition-all p-4 rounded-full cursor-pointer`}>
                         <FaMessage className='text-2xl' />
                     </div>
                     <div onClick={() => setTheme(theme === "light" ? "dark" : "light")} title='Next' className={`messageBtn ${theme === "light" ? "bg-gray-100 hover:bg-gray-200" : "hover:bg-gray-700 bg-gray-800 text-gray-400"} transition-all p-3 rounded-full cursor-pointer`}>

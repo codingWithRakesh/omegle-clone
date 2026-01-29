@@ -56,7 +56,8 @@ const MessageContainer = ({ setIsOpenMessage }) => {
         <div className={`messaging w-[25%] border border-gray-700 h-full rounded-2xl flex flex-col ${theme === "light" ? "bg-white text-black" : "bg-gray-900 text-gray-300"}`}>
             <div className={`headerPartMessage h-[8%] flex m-2 justify-between items-center px-4 ${theme === "light" ? "bg-gray-100" : "bg-gray-700 text-gray-400"} rounded-2xl`}>
                 <div>Messages</div>
-                <div onClick={() => setIsOpenMessage((v) => !v)} className={`cursor-pointer p-3 rounded-full ${theme === "light" ? "hover:bg-gray-200" : "hover:bg-gray-600"}`}>
+                <div 
+                    onClick={() => setIsOpenMessage((v) => ({...v, onClickIsOn: !v.onClickIsOn}))} className={`cursor-pointer p-3 rounded-full ${theme === "light" ? "hover:bg-gray-200" : "hover:bg-gray-600"}`}>
                     <RxCross1 />
                 </div>
             </div>

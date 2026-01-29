@@ -45,7 +45,9 @@ const endVideoCallController = asyncHandler(async (req: Request, res: Response, 
     }
 
     if(peerId && isUserExist(peerId)){
-        io.to(peerId).emit("call_ended", { roomId, peerId, isExist: isUserExist(peerId) });
+        if(roomId){
+            io.to(peerId).emit("call_ended", { roomId, peerId, isExist: isUserExist(peerId) });
+        }
     }
 
     if(isEnd){
