@@ -57,7 +57,7 @@ const CallDuration = ({ peer }) => {
   }, [peer]);
 
   return (
-    <div className={`${theme === "light" ? "bg-gray-200" : "bg-gray-800 text-gray-400"} px-4 py-2 rounded-2xl`}>
+    <div className={`${theme === "light" ? "text-gray-950" : "text-gray-400"} glass font-semibold sujoy2 px-4 py-2 rounded-md`}>
       Call Duration: {duration}
     </div>
   );
