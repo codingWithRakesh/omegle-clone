@@ -10,7 +10,7 @@ import Error from "./pages/Error.jsx";
 
 function App() {
   const { setRoomId, setPeer, matchCycle } = useRoomStore();
-  const { isConnected, setIsConnected } = useIsConnected()
+  const { setIsConnected } = useIsConnected()
   const { setIsOpenMessage } = useIsOpenMessage()
 
   const {
